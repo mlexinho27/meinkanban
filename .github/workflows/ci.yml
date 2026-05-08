@@ -1,0 +1,21 @@
+name: build-and-archive-kanban-frontend-app
+on: [push]
+jobs:
+    build:
+        runs-on: "ubuntu-latest"
+        steps:
+          - name: Checkout repository
+            uses: "actions/checkout@v4"
+          - name: Setup Node-Environment
+            uses: "actions/setup-node@v4"
+            with:
+              node-version: '22'
+          - name: Build optimized web application
+            run: |
+              npm ci
+              npm run build
+          - name: Archive production artifacts
+            uses: actions/upload-artifact@v4
+            with:
+              name: dist
+              path: dist
