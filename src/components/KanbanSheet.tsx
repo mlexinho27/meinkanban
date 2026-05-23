@@ -1,5 +1,5 @@
 import type { Item } from '../data/types';
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
@@ -7,9 +7,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from '@/components/ui/sheet';
 import KanbanItem from './KanbanItem';
-
 
 interface KanbanSheetProps {
   item?: Item; // Optional item prop for editing
@@ -19,7 +18,6 @@ interface KanbanSheetProps {
 }
 
 function KanbanSheet({ item, fetchItems, open, onOpenChange }: KanbanSheetProps) {
-
   const handleSave = () => {
     onOpenChange(false); // Close the sheet
     fetchItems(); // Refresh the items
@@ -42,7 +40,9 @@ function KanbanSheet({ item, fetchItems, open, onOpenChange }: KanbanSheetProps)
           <div>
             <SheetTitle>{item ? 'Edit Kanban Item' : 'Create New Kanban Item'}</SheetTitle>
             <SheetDescription>
-              {item ? 'Edit the details for the item and save the changes.' : 'Fill in the details for the new item and save it to the board.'}
+              {item
+                ? 'Edit the details for the item and save the changes.'
+                : 'Fill in the details for the new item and save it to the board.'}
             </SheetDescription>
           </div>
         </SheetHeader>

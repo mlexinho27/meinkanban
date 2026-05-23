@@ -1,1 +1,171 @@
-{"openapi":"3.0.0","info":{"title":"Kanban API","version":"1.0.0"},"paths":{"/items":{"get":{"summary":"Get all items","responses":{"200":{"description":"Successful operation","content":{"application/json":{"schema":{"type":"array","items":{"type":"object","properties":{"id":{"type":"number"},"title":{"type":"string","maxLength":80},"description":{"type":"string","maxLength":6000},"type":{"type":"string","enum":["User Story","Defect","Task"]},"estimate":{"type":"number","minimum":1,"maximum":100},"state":{"type":"string","enum":["Open","In Progress","In Validation","Done"]},"assigned_user":{"type":"string","maxLength":60},"priority":{"type":"string","enum":["High","Middle","Low"]}},"required":["id","title","type","estimate","state","assigned_user"]}}}}}}},"post":{"summary":"Create a new item","requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"title":{"type":"string","maxLength":80},"description":{"type":"string","maxLength":6000},"type":{"type":"string","enum":["User Story","Defect","Task"]},"estimate":{"type":"number","minimum":1,"maximum":100},"state":{"type":"string","enum":["Open","In Progress","In Validation","Done"]},"assigned_user":{"type":"string","maxLength":60},"priority":{"type":"string","enum":["High","Middle","Low"]}},"required":["title","type","estimate","state","assigned_user"]}}}},"responses":{"200":{"description":"Successful operation","content":{"application/json":{"schema":{"type":"object","properties":{"id":{"type":"number"}},"required":["id"]}}}}}}},"/items/{id}":{"get":{"summary":"Get item by ID","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer"}}],"responses":{"200":{"description":"Successful operation","content":{"application/json":{"schema":{"type":"object","properties":{"id":{"type":"number"},"title":{"type":"string","maxLength":80},"description":{"type":"string","maxLength":6000},"type":{"type":"string","enum":["User Story","Defect","Task"]},"estimate":{"type":"number","minimum":1,"maximum":100},"state":{"type":"string","enum":["Open","In Progress","In Validation","Done"]},"assigned_user":{"type":"string","maxLength":60},"priority":{"type":"string","enum":["High","Middle","Low"]}},"required":["id","title","type","estimate","state","assigned_user"]}}}},"404":{"description":"Item not found"}}},"put":{"summary":"Update item by ID","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"title":{"type":"string","maxLength":80},"description":{"type":"string","maxLength":6000},"type":{"type":"string","enum":["User Story","Defect","Task"]},"estimate":{"type":"number","minimum":1,"maximum":100},"state":{"type":"string","enum":["Open","In Progress","In Validation","Done"]},"assigned_user":{"type":"string","maxLength":60},"priority":{"type":"string","enum":["High","Middle","Low"]}}}}}},"responses":{"200":{"description":"Successful operation","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"404":{"description":"Item not found"}}},"delete":{"summary":"Delete item by ID","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer"}}],"responses":{"200":{"description":"Successful operation","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"404":{"description":"Item not found"}}}}}}
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Kanban API", "version": "1.0.0" },
+  "paths": {
+    "/items": {
+      "get": {
+        "summary": "Get all items",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "number" },
+                      "title": { "type": "string", "maxLength": 80 },
+                      "description": { "type": "string", "maxLength": 6000 },
+                      "type": { "type": "string", "enum": ["User Story", "Defect", "Task"] },
+                      "estimate": { "type": "number", "minimum": 1, "maximum": 100 },
+                      "state": {
+                        "type": "string",
+                        "enum": ["Open", "In Progress", "In Validation", "Done"]
+                      },
+                      "assigned_user": { "type": "string", "maxLength": 60 },
+                      "priority": { "type": "string", "enum": ["High", "Middle", "Low"] }
+                    },
+                    "required": ["id", "title", "type", "estimate", "state", "assigned_user"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "maxLength": 80 },
+                  "description": { "type": "string", "maxLength": 6000 },
+                  "type": { "type": "string", "enum": ["User Story", "Defect", "Task"] },
+                  "estimate": { "type": "number", "minimum": 1, "maximum": 100 },
+                  "state": {
+                    "type": "string",
+                    "enum": ["Open", "In Progress", "In Validation", "Done"]
+                  },
+                  "assigned_user": { "type": "string", "maxLength": 60 },
+                  "priority": { "type": "string", "enum": ["High", "Middle", "Low"] }
+                },
+                "required": ["title", "type", "estimate", "state", "assigned_user"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "id": { "type": "number" } },
+                  "required": ["id"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/items/{id}": {
+      "get": {
+        "summary": "Get item by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "number" },
+                    "title": { "type": "string", "maxLength": 80 },
+                    "description": { "type": "string", "maxLength": 6000 },
+                    "type": { "type": "string", "enum": ["User Story", "Defect", "Task"] },
+                    "estimate": { "type": "number", "minimum": 1, "maximum": 100 },
+                    "state": {
+                      "type": "string",
+                      "enum": ["Open", "In Progress", "In Validation", "Done"]
+                    },
+                    "assigned_user": { "type": "string", "maxLength": 60 },
+                    "priority": { "type": "string", "enum": ["High", "Middle", "Low"] }
+                  },
+                  "required": ["id", "title", "type", "estimate", "state", "assigned_user"]
+                }
+              }
+            }
+          },
+          "404": { "description": "Item not found" }
+        }
+      },
+      "put": {
+        "summary": "Update item by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "maxLength": 80 },
+                  "description": { "type": "string", "maxLength": 6000 },
+                  "type": { "type": "string", "enum": ["User Story", "Defect", "Task"] },
+                  "estimate": { "type": "number", "minimum": 1, "maximum": 100 },
+                  "state": {
+                    "type": "string",
+                    "enum": ["Open", "In Progress", "In Validation", "Done"]
+                  },
+                  "assigned_user": { "type": "string", "maxLength": 60 },
+                  "priority": { "type": "string", "enum": ["High", "Middle", "Low"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "properties": { "message": { "type": "string" } } }
+              }
+            }
+          },
+          "404": { "description": "Item not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete item by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "properties": { "message": { "type": "string" } } }
+              }
+            }
+          },
+          "404": { "description": "Item not found" }
+        }
+      }
+    }
+  }
+}
