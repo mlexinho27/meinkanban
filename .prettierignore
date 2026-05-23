@@ -1,0 +1,12 @@
+# Ignore artifacts and build output
+dist
+build
+
+# Ignore node_modules
+node_modules
+
+# Ignore NPM-Package-Lock File
+package-lock.json
+
+# Ignore Shadcn/ui components - these are dependencies therefore we do not want these formatted
+src/components/ui

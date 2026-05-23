@@ -1,10 +1,7 @@
 import KanbanBoard from './components/KanbanBoard';
 
-
 function App() {
-  return (
-    <KanbanBoard />
-  );
+  return <KanbanBoard />;
 }
 
-export default App
+export default App;

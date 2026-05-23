@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Item } from '../data/types';
-import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
+import { Toaster } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 import KanbanItemCard from './KanbanItemCard';
 import KanbanSheet from './KanbanSheet';
 
@@ -75,9 +75,7 @@ function KanbanBoard() {
     const originalState = itemToMove.state;
 
     // Optimistisches Update – funktionale Form vermeidet stale closures
-    setItems((prev) =>
-      prev.map((it) => (it.id === itemId ? { ...it, state: newState } : it))
-    );
+    setItems((prev) => prev.map((it) => (it.id === itemId ? { ...it, state: newState } : it)));
 
     try {
       const response = await fetch(`${API_BASE}/items/${itemId}`, {
@@ -97,7 +95,7 @@ function KanbanBoard() {
       toast.error(`Failed to move item ${itemId}: ${getErrorMessage(err)}`);
       // Rollback
       setItems((prev) =>
-        prev.map((it) => (it.id === itemId ? { ...it, state: originalState } : it))
+        prev.map((it) => (it.id === itemId ? { ...it, state: originalState } : it)),
       );
     }
   };
@@ -113,9 +111,7 @@ function KanbanBoard() {
   const renderItemsByState = (state: Item['state']) => {
     return items
       .filter((item) => item.state === state)
-      .map((item) => (
-        <KanbanItemCard key={item.id} item={item} fetchItems={fetchItems} />
-      ));
+      .map((item) => <KanbanItemCard key={item.id} item={item} fetchItems={fetchItems} />);
   };
 
   return (
