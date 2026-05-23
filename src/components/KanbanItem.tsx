@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -25,56 +25,54 @@ interface KanbanItemProps {
   onCancel: () => void;
 }
 
-function KanbanItem({ item, onSave, onCancel }: KanbanItemProps) {
-  const [itemData, setItemData] = useState<ItemData>({
+// Helper: leitet den initialen Form-State aus dem (optionalen) Item ab
+function getInitialData(item?: Item): ItemData {
+  if (item) {
+    return {
+      title: item.title,
+      description: item.description,
+      type: item.type,
+      estimate: item.estimate,
+      state: item.state,
+      assigned_user: item.assigned_user,
+      priority: item.priority,
+    };
+  }
+  return {
     title: '',
     description: '',
-    type: 'User Story', // Default value
-    estimate: 1, // Default value
-    state: 'Open', // Default value
+    type: 'User Story',
+    estimate: 1,
+    state: 'Open',
     assigned_user: '',
-    priority: 'Low', // Default value
-  });
+    priority: 'Low',
+  };
+}
 
-  useEffect(() => {
-    if (item) {
-      // Populate form fields if item prop is provided (editing)
-      setItemData({
-        title: item.title,
-        description: item.description,
-        type: item.type,
-        estimate: item.estimate,
-        state: item.state,
-        assigned_user: item.assigned_user,
-        priority: item.priority,
-      });
-    } else {
-      // Clear form fields if no item prop (creating new)
-      setItemData({
-        title: '',
-        description: '',
-        type: 'User Story',
-        estimate: 1,
-        state: 'Open',
-        assigned_user: '',
-        priority: 'Low',
-      });
-    }
-  }, [item]);
+function KanbanItem({ item, onSave, onCancel }: KanbanItemProps) {
+  // State direkt aus der Prop initialisieren (lazy initializer)
+  const [itemData, setItemData] = useState<ItemData>(() => getInitialData(item));
 
+  // "Previous prop"-Pattern: bei Wechsel der Item-ID State während des Renders neu setzen.
+  // Das ersetzt den useEffect und vermeidet den Cascading-Render.
+  const [prevItemId, setPrevItemId] = useState<Item['id'] | undefined>(item?.id);
+  if (item?.id !== prevItemId) {
+    setPrevItemId(item?.id);
+    setItemData(getInitialData(item));
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
-    setItemData({ ...itemData, [id]: value });
+    setItemData(prev => ({ ...prev, [id]: value }));
   };
 
   const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setItemData({ ...itemData, [id]: parseInt(value, 10) || 0 });
+    setItemData(prev => ({ ...prev, [id]: parseInt(value, 10) || 0 }));
   };
 
   const handleSelectChange = (id: keyof ItemData, value: ItemData[keyof ItemData]) => {
-    setItemData({ ...itemData, [id]: value });
+    setItemData(prev => ({ ...prev, [id]: value }));
   };
 
   const validateForm = () => {
@@ -83,28 +81,28 @@ function KanbanItem({ item, onSave, onCancel }: KanbanItemProps) {
       return false;
     }
     if (itemData.description && itemData.description.length > 6000) {
-        toast.error("Description must be less than 6000 characters.");
-        return false;
+      toast.error("Description must be less than 6000 characters.");
+      return false;
     }
     if (!itemData.type || !["User Story", "Defect", "Task"].includes(itemData.type)) {
-        toast.error("Invalid item type.");
-        return false;
+      toast.error("Invalid item type.");
+      return false;
     }
     if (itemData.estimate < 1 || itemData.estimate > 100) {
-        toast.error("Estimate must be between 1 and 100.");
-        return false;
+      toast.error("Estimate must be between 1 and 100.");
+      return false;
     }
     if (!itemData.state || !["Open", "In Progress", "In Validation", "Done"].includes(itemData.state)) {
-        toast.error("Invalid item state.");
-        return false;
+      toast.error("Invalid item state.");
+      return false;
     }
     if (!itemData.assigned_user || itemData.assigned_user.length > 60) {
-        toast.error("Assigned user is required and must be less than 60 characters.");
-        return false;
+      toast.error("Assigned user is required and must be less than 60 characters.");
+      return false;
     }
     if (!itemData.priority || !["High", "Middle", "Low"].includes(itemData.priority)) {
-        toast.error("Invalid priority.");
-        return false;
+      toast.error("Invalid priority.");
+      return false;
     }
     return true;
   };
@@ -115,7 +113,9 @@ function KanbanItem({ item, onSave, onCancel }: KanbanItemProps) {
     }
 
     try {
-      const url = item ? `https://hb-kanban-backend.hb-user.workers.dev/items/${item.id}` : 'https://hb-kanban-backend.hb-user.workers.dev/items';
+      const url = item
+        ? `https://hb-kanban-backend.hb-user.workers.dev/items/${item.id}`
+        : 'https://hb-kanban-backend.hb-user.workers.dev/items';
       const method = item ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -133,11 +133,11 @@ function KanbanItem({ item, onSave, onCancel }: KanbanItemProps) {
       const result = await response.json();
       console.log('Item saved:', result);
       toast.success(`Item ${item ? 'updated' : 'created'} successfully!`);
-      onSave(); // Notify parent component to refresh/close form
+      onSave();
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving item:', error);
-      toast.error(`Failed to save item: ${error.message}`);
+      toast.error(`Failed to save item: ${(error as Error).message}`);
     }
   };
 
@@ -170,7 +170,7 @@ function KanbanItem({ item, onSave, onCancel }: KanbanItemProps) {
       </div>
       <div className="grid gap-2">
         <Label htmlFor="state">State</Label>
-         <Select value={itemData.state} onValueChange={(value: "Open" | "In Progress" | "In Validation" | "Done") => handleSelectChange('state', value)}>
+        <Select value={itemData.state} onValueChange={(value: "Open" | "In Progress" | "In Validation" | "Done") => handleSelectChange('state', value)}>
           <SelectTrigger>
             <SelectValue placeholder="Select state" />
           </SelectTrigger>
@@ -188,7 +188,7 @@ function KanbanItem({ item, onSave, onCancel }: KanbanItemProps) {
       </div>
       <div className="grid gap-2">
         <Label htmlFor="priority">Priority</Label>
-         <Select value={itemData.priority} onValueChange={(value: "High" | "Middle" | "Low") => handleSelectChange('priority', value)}>
+        <Select value={itemData.priority} onValueChange={(value: "High" | "Middle" | "Low") => handleSelectChange('priority', value)}>
           <SelectTrigger>
             <SelectValue placeholder="Select priority" />
           </SelectTrigger>
